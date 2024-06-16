@@ -60,30 +60,71 @@ function App() {
     },
   ]
 
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [scores,setScores] = useState({morning:0,evening:0});
+  const [testStarted, setTestStarted] = useState(false);
+  const [result, setResult] = useState("");
 
-  const handleOptionClick = (morning,evening)=>{
-    setScores({
-      morning : scores.morning + morning,
-      evening : scores.evening + evening,
-    })
+  const startTest = () => {
+    setTestStarted(true);
+  };
+
+  const handleOptionClick = (option) => {
+    const newScores = {
+      morning: scores.morning + option.morning,
+      evening: scores.evening + option.evening
+    };
+
+    if (currentQuestionIndex < question.length - 1) {
+      setCurrentQuestionIndex(currentQuestionIndex + 1);
+      setScores(newScores);
+    } else {
+      const morningPercentage = (newScores.morning / (question.length * 3)) * 100;
+      const eveningPercentage = (newScores.evening / (question.length * 3)) * 100;
+      setResult(calculateType(morningPercentage, eveningPercentage));
+      console.log(`테스트 완료! 아침형 점수: ${scores.morning}, 저녁형 점수: ${scores.evening}`);
+    }
+  };
+
+
+
+  function calculateType(morningPercentage, eveningPercentage) {
+    if (morningPercentage >= 90) {
+      return "새벽의 전사";
+    } else if (morningPercentage >= 70) {
+      return "태양의 친구";
+    } else if (eveningPercentage >= 90) {
+      return "달빛의 주인";
+    } else if (eveningPercentage >= 70) {
+      return "밤의 정령";
+    } else if (morningPercentage >= 50 || eveningPercentage >= 50) {
+      return "황혼의 방랑자";
+    }
   }
+
   return (
     <div className="container mt-5">
-      <h1>성향 분석 설문</h1>
-      {question.map((q, index)=>(
-        <div key={index} className='my-3'>
-          <h2>{q.question}</h2>
-          {q.options.map((option, idx)=>{
+      {!testStarted ? (
+        <button className="btn btn-primary" onClick={startTest}>
+          테스트 시작하기
+        </button>
+      ) : result ? (
+        <div>
+          <h2>당신은 {result}입니다!</h2>
+        </div>
+      ) : (
+        <div>
+          <h2>{question[currentQuestionIndex].question}</h2>
+          {question[currentQuestionIndex].options.map((option,idx)=>(
             <button
             key={idx}
             className='btn btn-outline-primary m-2'
-            onClick={()=> handleOptionClick(option.morning,option.evening)}>
+            onClick={()=> handleOptionClick(option)}>
               {option.text}
             </button>
-          })}
-          </div>
-      ))}
+          ))}
+        </div>
+      )}
     </div>
   );
 }
