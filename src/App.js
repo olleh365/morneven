@@ -1,5 +1,7 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React,{useState} from 'react';
+import './styles.css';
+
 
 function App() {
   const question = [
@@ -60,6 +62,33 @@ function App() {
     },
   ]
 
+  const types = {
+    "새벽의 전사": {
+      image: "./perfect_morn.png",
+      description: "당신은 새벽에 가장 활발하며, 아침의 첫 번째 빛과 함께 하루를 시작하는 사람입니다."
+    },
+    "태양의 친구": {
+      image: "./some_morn.png",
+      description: "아침에 활동적이고 일찍 일어나는 것을 좋아하는 당신은 태양과 같이 밝습니다."
+    },
+    "달빛의 주인": {
+      image: "./perfect_even.png",
+      description: "밤이 깊어질수록 활기를 띠며, 밤늦게까지 활동하는 것을 즐깁니다."
+    },
+    "밤의 정령": {
+      image: "./some_even.png",
+      description: "저녁과 밤에 가장 많은 에너지를 느끼는 당신은 밤의 정령과 같습니다."
+    },
+    "황혼의 방랑자": {
+      image: "./morneven_half.png",
+      description: "아침과 저녁 모두 활동적인 당신은 황혼의 시간에 자유를 느낍니다."
+    },
+    "시간에 구애받지 않는 자": {
+      image: "./time_else.png'",
+      description: "시간에 구애받지 않고 언제든지 활동할 수 있는 유연한 성향을 가지고 있습니다."
+    }
+  };
+
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [scores,setScores] = useState({morning:0,evening:0});
   const [testStarted, setTestStarted] = useState(false);
@@ -81,7 +110,8 @@ function App() {
     } else {
       const morningPercentage = (newScores.morning / (question.length * 3)) * 100;
       const eveningPercentage = (newScores.evening / (question.length * 3)) * 100;
-      setResult(calculateType(morningPercentage, eveningPercentage));
+      const type = (calculateType(morningPercentage, eveningPercentage));
+      setResult(type);
       console.log(`테스트 완료! 아침형 점수: ${scores.morning}, 저녁형 점수: ${scores.evening}`);
     }
   };
@@ -99,6 +129,8 @@ function App() {
       return "밤의 정령";
     } else if (morningPercentage >= 50 || eveningPercentage >= 50) {
       return "황혼의 방랑자";
+    } else {
+      return "시간에 구애받지 않는 자";
     }
   }
 
@@ -111,6 +143,8 @@ function App() {
       ) : result ? (
         <div>
           <h2>당신은 {result}입니다!</h2>
+          <img src={types[result].image} alt={result} style={{ width: '70%', height: 'auto' }} />
+          <p>{types[result].description}</p>
         </div>
       ) : (
         <div>

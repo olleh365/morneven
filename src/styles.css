@@ -8,3 +8,7 @@ header, footer {
 footer {
   font-size: 0.8em;
 }
+ 
+.container {
+  text-align: center;
+}
